@@ -1,0 +1,184 @@
+{
+  "id": "schema.json#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Intermediary format",
+  "description": "This is a JSON schema of intermediary format for WebArchiv NK.",
+  "required": [
+    "id",
+    "url",
+    "timestamp",
+    "mime-type",
+    "response-code",
+    "warc-filename",
+    "warc-offset"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique ID of the record extracted from WARC record header (field WARC-Record-ID). It should be string representation of UUID as URN (RFC 4122 standard).",
+      "examples": [
+        "urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"
+      ]
+    },
+    "content": {
+      "type": "string",
+      "description": "The archived content (i.e. the WARC record payload) encoded in base64."
+    },
+    "plain-text": {
+      "type": "string",
+      "description": "Plain text extracted by JusText or other MIME-specific module. This field is required by Word Tokenizer and Sentence Tokenizer."
+    },
+    "plain-text-tokens": {
+      "type": "array",
+      "description": "Plain text broken down into list of words and punctuation. Tokens are extracted from plain text by Word Tokenizer. This field is required by Topic Identifier, Web Page Type Identifier and Sentiment Analyzer.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "plain-text-sentences": {
+      "type": "array",
+      "description": "Plain text broken down into list of sentences. Sentences are extracted from plain text by Sentence Tokenizer.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "urlkey": {
+      "type": "string",
+      "description": "URL search key, i.e. canonized URL with reordered components for faster search and deduplication in archive.",
+      "format": "uri"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "Date and time when the capturing of the record started. This value is extracted from WARC record header (field WARC-Date). Format is YYYY-MM-DDThh:mm:ssZ (ISO 8601 standard).",
+      "format": "date-time",
+      "examples": [
+        "2019-07-01T11:47:50Z"
+      ]
+    },
+    "url": {
+      "type": "string",
+      "description": "Original URL. This value is extracted from WARC record header (field WARC-Target-URI).",
+      "format": "uri"
+    },
+    "mime-type": {
+      "type": "string",
+      "description": "MIME (Multipurpose Internet Mail Extensions) types, including warc/warcinfo, warc/metadata, warc/revisit, warc/request and text/dns. This value is extracted from response HTTP headers (field Content-Type).",
+      "pattern": "^[a-z]+/[a-zA-Z0-9\\.\\-\\+]+$",
+      "examples": [
+        "text/html",
+        "warc/revisit",
+        "image/jpeg"
+      ]
+    },
+    "response-code": {
+      "type": "string",
+      "description": "HTTP response status code. This value is extracted from HTTP response.",
+      "pattern": "^[1-5][0-9]{2}$"
+    },
+    "digest": {
+      "type": "string",
+      "description": "The algorithm name and calculated value of a digest applied to the WARC record payload. This value is extracted from WARC record header (field WARC-Payload-Digest).",
+      "examples": [
+        "sha1:UGQMKN3Z4JIY3RLUXNZJJZPRF3MH3DNG"
+      ]
+    },
+    "redirect-url": {
+      "type": "string",
+      "description": "The target URL of redirection. This value is extracted from response HTTP headers (field Location)."
+    },
+    "robot-meta-tags": {
+      "type": "string",
+      "description": "AIF robot metatags, i.e. directives for web crawlers (A = noarchive, I = noindex, F = nofollow).",
+      "pattern": "^[AIF]+$"
+    },
+    "warc-offset": {
+      "type": "integer",
+      "description": "Offset in the WARC file, where the WARC record starts. This value is extracted from WARC record header (field absolute-offset).",
+      "minimum": 0
+    },
+    "warc-record-size": {
+      "type": "integer",
+      "description": "Size of the WARC content block in the WARC file. This value is extracted from WARC record header (field Content-Length).",
+      "minimum": 0
+    },
+    "warc-filename": {
+      "type": "string",
+      "description": "Path to a WARC file, where the record is stored. This value is extracted from WARC record header (field reader-identifier)."
+    },
+    "rec-headers": {
+      "type": "object",
+      "description": "Key-value pairs of WARC record headers. All headers are extracted from WARC file by AUT.",
+      "properties": { },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "http-headers": {
+      "type": "object",
+      "description": "Key-value pairs of HTTP response headers. All headers are extracted from WARC file by AUT.",
+      "properties": { },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "title": {
+      "type": "string",
+      "description": "Title extracted by MIME-specific modules (e.g. content of TITLE tag in case of text/html)."
+    },
+    "headlines": {
+      "type": "array",
+      "description": "List of headlines extracted by MIME-specific modules (e.g. contents of H tags in case of text/html).",
+      "items": {
+        "type": "string"
+      }
+    },
+    "links": {
+      "type": "array",
+      "description": "List of links to other objects extracted by MIME-specific modules (e.g. contents of A tags in case of text/html).",
+      "items": {
+        "type": "string"
+      }
+    },
+    "language": {
+      "type": "string",
+      "description": "Language of the content (in ISO 639-1 code) extracted by MIME-specific modules.",
+      "pattern": "^[a-z]{2}$",
+      "examples": [
+        "cs",
+        "en"
+      ]
+    },
+    "web-page-type": {
+      "type": "string",
+      "description": "Type of a web page assigned automatically by Web Page Type Identifier.",
+      "enum": [
+        "eshop",
+        "news",
+        "forum",
+        "others"
+      ]
+    },
+    "topics": {
+      "type": "array",
+      "description": "Topics assigned automatically by Topic Identifier.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sentiment": {
+      "type": "number",
+      "description": "Sentiment assigned automatically by Sentiment Analyzer. It is a float in <-1,1> (-1 is the most negative sentiment, 1 the most positive and 0 is neutral).",
+      "minimum": -1,
+      "maximum": 1
+    },
+    "refers-to": {
+      "type": "string",
+      "description": "UUID of the reference record (only for 'warc/revisit' type of records). This value is extracted from WARC record header (field WARC-Refers-To)."
+    },
+    "harvest-id": {
+      "type": "string",
+      "description": "Reference to the harvest table."
+    }
+  }
+}

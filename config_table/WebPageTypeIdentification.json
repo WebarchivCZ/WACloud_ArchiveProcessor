@@ -1,0 +1,10 @@
+{
+  "webtypes": {
+    "value": {
+      "eshop": 0,
+      "news": 1,
+      "forum": 2,
+      "others": 3
+    }
+  }
+}
